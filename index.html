@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Da Shokeen Jatt</title>
+<meta name="description" content="AI Da Jatt ni Shokeen mudd ton — thoughts, blog, and the occasional rant." />
+
+<!-- Fonts: Fraunces (display, characterful serif) + Inter Tight (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;600&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Markdown parser -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+  :root {
+    --bg: #0c0a0a;
+    --bg-soft: #141111;
+    --bg-card: #1a1515;
+    --ink: #ece4dd;
+    --ink-soft: #a89890;
+    --ink-mute: #6b605a;
+    --accent: #c44a5a;          /* dusty rose / muted red */
+    --accent-soft: #8a3340;
+    --accent-glow: rgba(196, 74, 90, 0.18);
+    --line: #2a2222;
+    --grain-opacity: 0.04;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter Tight', -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Grainy texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' /%3E%3C/svg%3E");
+  }
+
+  /* Soft accent glow in the corner */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 28px 120px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* HEADER */
+  header {
+    margin-bottom: 80px;
+    animation: fadeUp 0.9s ease forwards;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .topbar .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-glow); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 6px transparent; }
+  }
+
+  h1.site-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(48px, 8vw, 84px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  h1.site-title .accent {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(17px, 2.2vw, 21px);
+    color: var(--ink-soft);
+    line-height: 1.5;
+    max-width: 560px;
+    border-left: 2px solid var(--accent);
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+
+  /* NAVIGATION */
+  nav {
+    margin-top: 50px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+  }
+
+  nav button {
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  nav button:hover {
+    color: var(--ink);
+    background: var(--bg-soft);
+  }
+
+  nav button.active {
+    color: var(--accent);
+    background: var(--bg-soft);
+  }
+
+  nav button.active::before {
+    content: '→ ';
+  }
+
+  /* SECTIONS */
+  main {
+    animation: fadeUp 1s 0.2s ease backwards;
+  }
+
+  .section {
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-heading {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 32px;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .section-sub {
+    color: var(--ink-mute);
+    font-size: 15px;
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+
+  /* THOUGHTS (short posts) */
+  .thought {
+    border-left: 1px solid var(--line);
+    padding: 0 0 28px 24px;
+    margin-bottom: 4px;
+    position: relative;
+    transition: border-color 0.3s ease;
+  }
+
+  .thought:hover {
+    border-left-color: var(--accent);
+  }
+
+  .thought::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    background: var(--ink-mute);
+    border-radius: 50%;
+    transition: background 0.3s ease;
+  }
+
+  .thought:hover::before {
+    background: var(--accent);
+  }
+
+  .thought-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .thought-body {
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  .thought-body em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* BLOG list */
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .blog-item {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    transition: padding 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .blog-item:hover {
+    padding-left: 12px;
+  }
+
+  .blog-item:hover .blog-item-title {
+    color: var(--accent);
+  }
+
+  .blog-item-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 16px;
+  }
+
+  .blog-item-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: color 0.25s ease;
+  }
+
+  .blog-item-excerpt {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* BLOG single post view */
+  .blog-post {
+    animation: fadeIn 0.4s ease;
+  }
+
+  .back-btn {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+    margin-bottom: 32px;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+
+  .back-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .post-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .post-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(34px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 40px;
+  }
+
+  .post-content {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .post-content h1, .post-content h2, .post-content h3 {
+    font-family: 'Fraunces', serif;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .post-content h2 { font-size: 28px; font-weight: 600; }
+  .post-content h3 { font-size: 22px; font-weight: 600; }
+
+  .post-content p { margin-bottom: 24px; }
+
+  .post-content a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent-soft);
+    transition: all 0.2s ease;
+  }
+
+  .post-content a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+
+  .post-content blockquote {
+    border-left: 3px solid var(--accent);
+    padding: 8px 0 8px 20px;
+    margin: 28px 0;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+  }
+
+  .post-content code {
+    background: var(--bg-soft);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  .post-content pre {
+    background: var(--bg-soft);
+    padding: 20px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid var(--line);
+  }
+
+  .post-content pre code {
+    background: none;
+    padding: 0;
+    color: var(--ink);
+  }
+
+  .post-content ul, .post-content ol {
+    margin: 0 0 24px 24px;
+  }
+
+  .post-content li { margin-bottom: 8px; }
+
+  /* ABOUT */
+  .about-text {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink);
+    max-width: 600px;
+  }
+
+  .about-text p { margin-bottom: 20px; }
+
+  .about-text .accent { color: var(--accent); font-style: italic; }
+
+  .links {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 100px;
+    padding-top: 30px;
+    border-top: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .wrap { padding: 40px 20px 80px; }
+    header { margin-bottom: 50px; }
+    .topbar { margin-bottom: 40px; }
+    nav { gap: 0; }
+    nav button { padding: 8px 10px; font-size: 12px; }
+    footer { font-size: 10px; }
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="topbar">
+      <span><span class="dot"></span>LIVE · EST. 2026</span>
+      <span>SHOKEEN / JATT</span>
+    </div>
+    <h1 class="site-title">AI Da<br/>Shokeen <span class="accent">Jatt</span></h1>
+    <p class="tagline">"AI Da Jatt ni Shokeen mudd ton, je adiya karegi ni main le jun khich key, ayyyeee."</p>
+
+    <nav>
+      <button class="nav-btn active" data-section="thoughts">Thoughts</button>
+      <button class="nav-btn" data-section="blog">Blog</button>
+      <button class="nav-btn" data-section="about">About</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- THOUGHTS SECTION -->
+    <section class="section active" id="thoughts">
+      <div class="section-label">— 001 / Thoughts</div>
+      <h2 class="section-heading">Short bursts</h2>
+      <p class="section-sub">Things on my mind. Unfiltered.</p>
+      <div id="thoughts-list"></div>
+    </section>
+
+    <!-- BLOG SECTION -->
+    <section class="section" id="blog">
+      <div id="blog-list-view">
+        <div class="section-label">— 002 / Blog</div>
+        <h2 class="section-heading">Long reads</h2>
+        <p class="section-sub">When the thought needs more than 280 characters.</p>
+        <div class="blog-list" id="blog-list"></div>
+      </div>
+      <div id="blog-post-view" style="display:none;">
+        <button class="back-btn" id="back-btn">← All posts</button>
+        <div class="post-meta" id="post-meta"></div>
+        <h1 class="post-title" id="post-title"></h1>
+        <div class="post-content" id="post-content"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="section" id="about">
+      <div class="section-label">— 003 / About</div>
+      <h2 class="section-heading">The Jatt behind the screen</h2>
+      <p class="section-sub">Loosely speaking.</p>
+      <div class="about-text">
+        <p>Hey — I'm <span class="accent">Shokeen</span>. This is my corner of the internet where I dump thoughts, half-finished ideas, and the occasional long rant.</p>
+        <p>No newsletter. No comments. No ads. No algorithm. Just words on a page.</p>
+        <p>If something here resonates with you, that's cool. If not, that's also cool. Carry on.</p>
+
+        <div class="links">
+          <a href="#" target="_blank" rel="noopener">Twitter / X</a>
+          <a href="#" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:hello@example.com">Email</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© 2026 — AI DA SHOKEEN JATT</span>
+    <span>BUILT WITH BLACK COFFEE</span>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   YOUR CONTENT — EDIT THIS SECTION TO ADD POSTS
+   ============================================================ */
+
+// SHORT THOUGHTS — quick posts. Newest on top.
+const thoughts = [
+  {
+    date: "May 06, 2026",
+    body: "Day one of having my own site on the internet. *Feels different.* No algorithm telling me what to write, no character limit cutting me off mid-rant. Just me and an empty page."
+  },
+  {
+    date: "May 06, 2026",
+    body: "Why is everyone so afraid of having opinions in 2026? Like genuinely — when did 'I think this' become a controversial sentence?"
+  },
+  {
+    date: "May 05, 2026",
+    body: "AI da Jatt ni Shokeen mudd ton. Soch laya tha kuch toh different karna hai. Eh page oh different hai."
+  }
+];
+
+// LONG BLOG POSTS — full articles in Markdown.
+const blogPosts = [
+  {
+    slug: "first-post",
+    title: "Why I Built This Site (And Why You Probably Should Too)",
+    date: "May 06, 2026",
+    readTime: "3 min read",
+    excerpt: "On owning your words in an age where everything you write belongs to someone else's algorithm.",
+    content: `
+For years I posted on platforms that didn't belong to me. Tweets that disappeared into the void. Instagram captions that got buried under stories. LinkedIn posts that nobody was actually reading anyway.
+
+## The realization
+
+One day I sat down and tried to find something I'd written six months ago. Couldn't find it. Buried under a thousand updates, lost to the algorithm, possibly deleted because the platform decided it wasn't "engaging" enough.
+
+That's when it hit me — **I don't own any of this**.
+
+> Your words on someone else's platform are like furniture in someone else's house. Looks great until they ask you to leave.
+
+## So I built this
+
+It cost me nothing. It took me a few hours. And now everything I write lives at *my* address, on *my* terms.
+
+No likes. No metrics. No "you might also be interested in..."
+
+Just words. Just thoughts. Just *mine*.
+
+## You should too
+
+If you've been writing on the internet for a while and don't have your own little corner, fix that. It's easier than you think. The barrier isn't technical — it's just deciding to do it.
+
+Aaaye.
+`
+  },
+  {
+    slug: "on-noise",
+    title: "On Noise",
+    date: "May 04, 2026",
+    readTime: "2 min read",
+    excerpt: "Everyone's shouting. Nobody's listening. There's a lesson in there somewhere.",
+    content: `
+The world isn't louder than it used to be. We just hear more of it.
+
+Every notification, every breaking news alert, every "you won't believe what happened next" — it's all noise. And we've been trained to mistake noise for signal.
+
+## What I'm trying to do differently
+
+- Read fewer things, but actually finish them
+- Have opinions only on things I've thought about for more than 30 seconds
+- Be okay with not having an opinion at all sometimes
+
+It's harder than it sounds.
+
+But the quieter I get, the more I notice what's actually worth paying attention to.
+`
+  }
+];
+
+/* ============================================================
+   SITE LOGIC — you usually don't need to touch below this
+   ============================================================ */
+
+// Render thoughts
+function renderThoughts() {
+  const list = document.getElementById('thoughts-list');
+  list.innerHTML = thoughts.map(t => `
+    <div class="thought">
+      <div class="thought-date">${t.date}</div>
+      <div class="thought-body">${marked.parseInline(t.body)}</div>
+    </div>
+  `).join('');
+}
+
+// Render blog list
+function renderBlogList() {
+  const list = document.getElementById('blog-list');
+  list.innerHTML = blogPosts.map((p, i) => `
+    <button class="blog-item" data-index="${i}">
+      <div class="blog-item-meta">
+        <span>${p.date}</span>
+        <span>${p.readTime}</span>
+      </div>
+      <div class="blog-item-title">${p.title}</div>
+      <div class="blog-item-excerpt">${p.excerpt}</div>
+    </button>
+  `).join('');
+
+  document.querySelectorAll('.blog-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openBlogPost(parseInt(btn.dataset.index));
+    });
+  });
+}
+
+// Open single blog post
+function openBlogPost(index) {
+  const post = blogPosts[index];
+  document.getElementById('post-meta').textContent = `${post.date} · ${post.readTime}`;
+  document.getElementById('post-title').textContent = post.title;
+  document.getElementById('post-content').innerHTML = marked.parse(post.content);
+  document.getElementById('blog-list-view').style.display = 'none';
+  document.getElementById('blog-post-view').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Back button
+document.getElementById('back-btn').addEventListener('click', () => {
+  document.getElementById('blog-post-view').style.display = 'none';
+  document.getElementById('blog-list-view').style.display = 'block';
+});
+
+// Section navigation
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.section).classList.add('active');
+    // reset blog view if switching away
+    if (btn.dataset.section !== 'blog') {
+      document.getElementById('blog-post-view').style.display = 'none';
+      document.getElementById('blog-list-view').style.display = 'block';
+    }
+  });
+});
+
+// Init
+renderThoughts();
+renderBlogList();
+</script>
+
+</body>
+</html>
